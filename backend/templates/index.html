@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ผลการวิเคราะห์สี</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="static/images/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #f4f4f9;
+            color: #212529;
+        }
+
+        .navbar {
+            background-color: #4a90e2;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand, .nav-link {
+            color: #fff !important;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffdd57 !important;
+        }
+
+        .color-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .color-preview:hover {
+            transform: scale(1.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #fff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background-color: #4a90e2;
+            border: none;
+            transition: background-color 0.3s, transform 0.3s;
+            font-weight: 500;
+            border-radius: 30px;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffdd57;
+            color: #212529;
+            transform: scale(1.05);
+        }
+
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            padding: 40px 0;
+        }
+
+        footer a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #ffdd57;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .card-body h5 {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+        }
+
+        .result-text {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        /* Layout adjustments */
+        .container {
+            max-width: 1200px;
+        }
+
+        .row.justify-content-center {
+            display: flex;
+            justify-content: center;
+        }
+
+        .spinner-border {
+            width: 4rem;
+            height: 4rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- นำทาง -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">ผลการวิเคราะห์สี</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">หน้าหลัก</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">เกี่ยวกับ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ติดต่อ</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- เนื้อหา -->
+    <div class="container py-5">
+        <h1 class="text-center mb-5">ผลการวิเคราะห์สี</h1>
+
+        <!-- สปินเนอร์ระหว่างการโหลด -->
+        <div id="loading" class="d-flex justify-content-center align-items-center mb-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">กำลังโหลด...</span>
+            </div>
+        </div>
+
+        <div id="result" class="row justify-content-center" style="display: none;">
+            {% for item in items %}
+            <div class="col-lg-4 col-md-6 mb-5">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">ผลการวิเคราะห์ (ID: {{ item.ID }})</h5>
+                        <div class="color-preview" style="background-color: rgb({{ item.average_color[0] }}, {{ item.average_color[1] }}, {{ item.average_color[2] }});"></div>
+                        <p class="result-text"><strong>ค่าเฉลี่ยของสี (RGB):</strong> [{{ item.average_color }}]</p>
+                        <p class="result-text"><strong>ความเหมือนของสี:</strong> {{ item.similarity }}%</p>
+                        <p class="result-text"><strong>R:</strong> {{ item.red_volume }} ลิตร</p>
+                        <p class="result-text"><strong>G:</strong> {{ item.green_volume }} ลิตร</p>
+                        <p class="result-text"><strong>B:</strong> {{ item.blue_volume }} ลิตร</p>
+                        <img src="{{ url_for('static', filename='uploads/' + item.image) }}" alt="Image" class="img-fluid mt-3 rounded">
+                        <a href="{{ url_for('details', id=item.ID) }}" class="btn btn-primary w-100 mt-3">ไปที่หน้ารายละเอียด</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="error" class="alert alert-danger text-center mt-4" style="display: none;">
+            เกิดข้อผิดพลาดในการโหลดข้อมูล!
+        </div>
+    </div>
+
+    <!-- ส่วนท้าย -->
+    <footer>
+        <div class="container text-center">
+            <p class="text-muted small mb-0">&copy; 2024 ผลการวิเคราะห์สี. All rights reserved.</p>
+            <div class="mt-3">
+                <a href="#">นโยบายความเป็นส่วนตัว</a> | <a href="#">เงื่อนไขการใช้บริการ</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        // ซ่อนตัวโหลดเมื่อข้อมูลถูกโหลด
+        window.onload = function() {
+            document.getElementById('loading').style.display = 'none';  // ซ่อนสปินเนอร์
+            document.getElementById('result').style.display = 'block';  // แสดงผลลัพธ์
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ผลการวิเคราะห์สีของภาพ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Prompt', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            border: none;
+        }
+        .card-body {
+            padding: 30px;
+        }
+        .card-title {
+            font-size: 1.75rem;
+            margin-bottom: 25px;
+        }
+        .img-fluid {
+            border-radius: 10px;
+            max-height: 300px;
+        }
+        .color-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result-text {
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mt-5">ผลการวิเคราะห์สีของภาพ</h1>
+        
+        <div class="card my-5">
+            <div class="card-body text-center">
+                <h3 class="card-title">ภาพที่อัพโหลด</h3>
+                <img src="{{ url_for('static', filename='uploads/' + file_name) }}" class="img-fluid mb-3" alt="Uploaded Image">
+                <h3 class="card-title">ภาพสีเฉลี่ย</h3>
+                <img src="{{ url_for('static', filename='output/average_color_image.jpg') }}" class="img-fluid mb-3" alt="Average Color Image">
+            </div>
+        </div>
+        
+        <div class="card my-5">
+            <div class="card-body">
+                <h3 class="card-title">ผลการวิเคราะห์</h3>
+                <div class="color-preview" style="background-color: rgb({{ average_color[0] }}, {{ average_color[1] }}, {{ average_color[2] }})"></div>
+                <p class="result-text"><strong>ค่าเฉลี่ยของสี (RGB):</strong> R={{ average_color[0] }}, G={{ average_color[1] }}, B={{ average_color[2] }}</p>
+                <p class="result-text"><strong>ความเหมือนของสี:</strong> {{ similarity | round(2) }}%</p>
+                
+                <h4>ปริมาตรสีที่ต้องการผสม (RGB):</h4>
+                <p class="result-text"><strong>R:</strong> {{ red_volume | round(2)}} ลิตร</p>
+                <p class="result-text"><strong>G:</strong> {{ green_volume | round(2)}} ลิตร</p>
+                <p class="result-text"><strong>B:</strong> {{ blue_volume | round(2)}} ลิตร</p>
+
+                <h4>ระบบสี CMYK:</h4>
+                <p class="result-text"><strong>C:</strong> {{ c | round(2) }}</p>
+                <p class="result-text"><strong>M:</strong> {{ m | round(2) }}</p>
+                <p class="result-text"><strong>Y:</strong> {{ y | round(2) }}</p>
+                <p class="result-text"><strong>K:</strong> {{ k | round(2) }}</p>
+
+                <h4>ปริมาตรสีที่ต้องการผสม (CMYK):</h4>
+                <p class="result-text"><strong>C:</strong> {{ c_volume | round(2)}} ลิตร</p>
+                <p class="result-text"><strong>M:</strong> {{ m_volume | round(2)}} ลิตร</p>
+                <p class="result-text"><strong>Y:</strong> {{ y_volume | round(2)}} ลิตร</p>
+                <p class="result-text"><strong>K:</strong> {{ k_volume | round(2)}} ลิตร</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
